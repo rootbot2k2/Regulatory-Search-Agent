@@ -4,8 +4,8 @@ Enhanced autonomous orchestrator with intelligent query processing and comparati
 from typing import List, Dict, Optional
 import logging
 
-from app.services.web_automation.fda_scraper import FDAScraper
-from app.services.web_automation.ema_scraper import EMAScraper
+from app.services.web_automation.ai_navigator import AIWebNavigator
+import asyncio
 from app.services.document_processing import DocumentProcessor
 from app.services.vector_store import VectorStoreService
 from app.services.rag_service import RAGService
@@ -40,11 +40,8 @@ class AutonomousOrchestrator:
         self.context_manager = ContextManager()
         self.comparative_service = ComparativeAnalysisService()
         
-        # Initialize scrapers
-        self.scrapers = {
-            'FDA': FDAScraper(self.settings.download_dir),
-            'EMA': EMAScraper(self.settings.download_dir),
-        }
+        # Initialize AI navigator (replaces all scrapers)
+        self.ai_navigator = AIWebNavigator()
         
         logger.info("✓ Autonomous Orchestrator initialized")
     
@@ -207,7 +204,7 @@ class AutonomousOrchestrator:
         max_docs_per_agency: int = 3
     ) -> Dict:
         """
-        Retrieve and index documents from agencies.
+        Retrieve and index documents from agencies using AI navigator.
         
         Args:
             drug_name: Name of the drug
@@ -226,28 +223,34 @@ class AutonomousOrchestrator:
             'errors': []
         }
         
-        for agency in agencies:
-            if agency not in self.scrapers:
-                logger.warning(f"Scraper not available for {agency}")
-                results['errors'].append(f"{agency}: Scraper not implemented")
-                continue
+        try:
+            # Use AI navigator to retrieve documents from all agencies
+            logger.info(f"Using AI navigator to retrieve documents for {drug_name}")
+            logger.info(f"Agencies: {', '.join(agencies)}")
             
-            try:
-                logger.info(f"Searching {agency} for {drug_name}...")
-                results['agencies_searched'].append(agency)
-                
-                # Search and download
-                scraper = self.scrapers[agency]
-                downloaded_files = scraper.search_and_download(
-                    drug_name,
-                    max_documents=max_docs_per_agency
+            # Run async retrieval
+            loop = asyncio.new_event_loop()
+            asyncio.set_event_loop(loop)
+            
+            agency_files = loop.run_until_complete(
+                self.ai_navigator.retrieve_documents(
+                    drug_name=drug_name,
+                    agencies=agencies
                 )
+            )
+            
+            loop.close()
+            
+            # Process results from each agency
+            for agency, downloaded_files in agency_files.items():
+                results['agencies_searched'].append(agency)
                 
                 if not downloaded_files:
                     logger.warning(f"No documents from {agency}")
                     results['errors'].append(f"{agency}: No documents found")
                     continue
                 
+                logger.info(f"Retrieved {len(downloaded_files)} files from {agency}")
                 results['documents_downloaded'].extend(downloaded_files)
                 
                 # Index documents
@@ -257,17 +260,28 @@ class AutonomousOrchestrator:
                         
                         # Add agency to metadata
                         metadata['agency'] = agency
+                        metadata['drug_name'] = drug_name
                         
                         self.vector_store.add_documents(chunks, metadata)
                         results['documents_indexed'] += 1
                         
+                        logger.info(f"✓ Indexed {file_path}")
+                        
                     except Exception as e:
                         logger.error(f"Error indexing {file_path}: {str(e)}")
                         results['errors'].append(f"Indexing error: {str(e)}")
+            
+            if results['documents_indexed'] == 0:
+                results['status'] = 'error'
+                results['error'] = 'No documents were successfully indexed'
                 
-            except Exception as e:
-                logger.error(f"Error with {agency}: {str(e)}")
-                results['errors'].append(f"{agency}: {str(e)}")
+        except Exception as e:
+            logger.error(f"Error in document retrieval: {str(e)}")
+            import traceback
+            traceback.print_exc()
+            results['status'] = 'error'
+            results['error'] = str(e)
+            results['errors'].append(f"Retrieval error: {str(e)}")
         
         return results
     
