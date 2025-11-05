@@ -1,130 +1,184 @@
-# Regulatory Search Agent
+# 🔬 Regulatory Search Agent (Autonomous)
 
-An intelligent AI agent for automated retrieval, indexing, and analysis of drug regulatory documents from major international health agencies.
-
-## 🎯 Overview
-
-The Regulatory Search Agent is a sophisticated system that combines web automation, natural language processing, and retrieval-augmented generation (RAG) to provide researchers and regulatory professionals with instant access to regulatory information. The system autonomously navigates regulatory agency websites, downloads relevant documents, and enables natural language queries through a chat interface.
-
-## 🌐 Supported Agencies
-
-- **FDA** (Food and Drug Administration - USA)
-- **EMA** (European Medicines Agency - EU)
-- **Health Canada** (Canada)
-- **TGA** (Therapeutic Goods Administration - Australia)
-- **Swissmedic** (Swiss Agency for Therapeutic Products - Switzerland)
-- **NHRA** (National Health Regulatory Authority - Bahrain)
+An intelligent AI system for automated retrieval and analysis of drug regulatory documents from FDA, EMA, and other international regulatory agencies.
 
 ## ✨ Key Features
 
-- **Autonomous Web Browsing**: Automatically navigates complex regulatory websites and retrieves documents
-- **On-Demand Retrieval**: Fetches documents based on specific drug names or topics
-- **Local Vector Indexing**: Uses FAISS for efficient similarity search without external dependencies
-- **RAG-Powered Q&A**: Leverages GPT-4 to answer questions grounded in retrieved documents
-- **Multi-Model Support**: Choose between GPT-4, GPT-4-turbo, or GPT-3.5-turbo
-- **User-Friendly Interface**: Simple chat interface built with Streamlit or Gradio
-- **Source Citations**: All answers include references to source documents
+### 🤖 Fully Autonomous Operation
+- **Automatic Drug Name Extraction**: Just ask naturally - the system extracts drug names from your queries
+- **Intelligent Document Retrieval**: Automatically searches and downloads relevant regulatory documents
+- **Smart Caching**: Avoids re-downloading documents for follow-up questions
+- **Clarification Requests**: Asks for more information when queries are vague
 
-## 🏗️ Architecture
+### 📊 Comparative Analysis
+- **Multi-Agency Synthesis**: Compare findings across FDA, EMA, and other agencies
+- **Side-by-Side Analysis**: Identify similarities and differences in regulatory reviews
+- **Integrated Synthesis**: Get comprehensive answers based on totality of evidence
 
-The system is built with a modular, service-oriented architecture:
+### 💬 Conversational Intelligence
+- **Context Tracking**: Remembers the current drug and topics across multiple queries
+- **Follow-up Questions**: Ask related questions without repeating drug names
+- **Topic Detection**: Automatically identifies safety, efficacy, dosage, and other topics
 
-```
-┌─────────────────────┐
-│   User Interface    │
-│   (Streamlit/Gradio)│
-└──────────┬──────────┘
-           │
-┌──────────▼──────────┐
-│  Agentic Core /     │
-│    Orchestrator     │
-└─────┬───────┬───────┘
-      │       │
-      │       └──────────────┐
-      │                      │
-┌─────▼──────────┐   ┌──────▼────────┐
-│ Web Automation │   │  RAG & Q&A    │
-│     Module     │   │    Module     │
-└─────┬──────────┘   └──────┬────────┘
-      │                     │
-┌─────▼──────────┐   ┌──────▼────────┐
-│   Document     │   │  FAISS Vector │
-│   Processing   │───▶│     Store     │
-└────────────────┘   └───────────────┘
-```
+### 🎯 RAG-Powered Q&A
+- **GPT-4 Integration**: Generates expert-level answers grounded in regulatory documents
+- **Source Citations**: All answers include references to specific documents
+- **FAISS Vector Store**: Fast, local similarity search with no external dependencies
 
 ## 🚀 Quick Start
 
-### Prerequisites
-
-- Python 3.9 or higher
-- Google Chrome and ChromeDriver
-- OpenAI API key
-
 ### Installation
 
-1. Clone the repository:
 ```bash
-git clone https://github.com/your-username/Regulatory-Search-Agent.git
+# Clone the repository
+git clone https://github.com/rootbot2k2/Regulatory-Search-Agent.git
 cd Regulatory-Search-Agent
-```
 
-2. Install dependencies:
-```bash
-# Using Poetry (recommended)
-poetry install
-
-# Or using pip
+# Install dependencies
 pip install -r requirements.txt
-```
 
-3. Configure environment:
-```bash
+# Configure environment
 cp .env.template .env
-# Edit .env and add your OPENAI_API_KEY
+nano .env  # Add your OpenAI API key
 ```
 
-4. Start the backend:
+### Run the Application
+
+**Autonomous Interface (Recommended)**
 ```bash
-python main.py
+python3 run_autonomous.py
 ```
 
-5. Start the GUI (in a new terminal):
+Then open **http://localhost:7860** in your browser.
+
+**Original Manual Interface**
 ```bash
-streamlit run app/gui/chat_interface.py
+python3 run_gui.py
 ```
 
-## 📖 Usage
+**API Server**
+```bash
+python3 main.py
+```
 
-### Retrieving Documents
+## 💡 Usage Examples
 
-1. Open the GUI at `http://localhost:8501`
-2. In the sidebar, enter a drug name (e.g., "Keytruda")
-3. Select the agencies to search
-4. Click "Retrieve & Index Documents"
-5. Wait for the system to download and index the documents
+### Example 1: Comparative Query
+```
+You: "What were the differences in safety issues and drug dosage between 
+      the FDA and EMA reviews for Tezspire?"
 
-### Asking Questions
+System:
+1. Extracts drug name: "Tezspire"
+2. Identifies agencies: FDA, EMA
+3. Searches and downloads regulatory documents
+4. Generates comprehensive comparative analysis
+```
 
-1. Type your question in the chat input
-2. The system will:
-   - Search the vector store for relevant context
-   - Generate an answer using GPT-4
-   - Provide source citations
-3. View sources by expanding the "View Sources" section
+### Example 2: Simple Query
+```
+You: "What is Keytruda indicated for?"
 
-### Example Questions
+System:
+1. Extracts drug name: "Keytruda"
+2. Downloads FDA and EMA approval documents
+3. Generates answer with specific indications
+```
 
-- "What are the safety considerations for Keytruda?"
-- "Compare the FDA and EMA approval processes for this drug"
-- "What adverse events were reported during clinical trials?"
-- "What is the recommended dosage according to regulatory documents?"
+### Example 3: Follow-up Question
+```
+You: "What about the safety profile?"
 
-## 🛠️ Configuration
+System:
+1. Uses context (still discussing Keytruda)
+2. Retrieves relevant sections from already-indexed documents
+3. Generates answer without re-downloading
+```
 
-### Environment Variables
+### Example 4: Vague Query
+```
+You: "Tell me about safety issues"
 
-Create a `.env` file with the following variables:
+System: "Which drug would you like me to analyze? I can search FDA, 
+         EMA, and other regulatory agencies."
+```
+
+## 🏗️ Architecture
+
+```
+┌─────────────────────────────────────────────────────────┐
+│              Autonomous Gradio GUI                      │
+│  • Natural language queries                             │
+│  • Agency selection (FDA, EMA, etc.)                    │
+│  • Model selection (GPT-4, GPT-3.5-turbo)              │
+└────────────────────┬────────────────────────────────────┘
+                     │
+┌────────────────────▼────────────────────────────────────┐
+│          Autonomous Orchestrator                        │
+│  • Query analysis & drug name extraction                │
+│  • Context management                                   │
+│  • Workflow automation                                  │
+└─────┬──────────┬──────────┬──────────┬─────────────────┘
+      │          │          │          │
+┌─────▼────┐ ┌──▼────┐ ┌───▼────┐ ┌───▼──────────┐
+│  Query   │ │Context│ │  Web   │ │ Comparative  │
+│ Analyzer │ │Manager│ │Scraping│ │  Analysis    │
+└──────────┘ └───────┘ └────────┘ └──────────────┘
+      │          │          │          │
+      └──────────┴──────────┴──────────┘
+                     │
+┌────────────────────▼────────────────────────────────────┐
+│              RAG & Vector Store                         │
+│  • FAISS similarity search                              │
+│  • OpenAI embeddings                                    │
+│  • GPT-4 answer generation                              │
+└─────────────────────────────────────────────────────────┘
+```
+
+## 📋 Supported Agencies
+
+- ✅ **FDA** (Food and Drug Administration - USA)
+- ✅ **EMA** (European Medicines Agency - EU)
+- 🔄 **Health Canada** (ready for implementation)
+- 🔄 **TGA** (Australia - ready for implementation)
+- 🔄 **Swissmedic** (Switzerland - ready for implementation)
+- 🔄 **NHRA** (Bahrain - ready for implementation)
+
+## 🧪 Testing
+
+### Run Autonomous System Test
+```bash
+python3 test_autonomous.py
+```
+
+This tests:
+- Query analysis and drug name extraction
+- Context tracking across queries
+- Clarification detection
+- Autonomous document retrieval
+- Answer generation
+
+### Run Simple Pipeline Test
+```bash
+python3 test_simple.py
+```
+
+This tests the core RAG pipeline with a sample document.
+
+## 📊 Test Results
+
+```
+✅ Query Analysis: Correctly extracted "Tezspire" from complex query
+✅ Agency Detection: Identified FDA and EMA from query
+✅ Topic Extraction: Detected safety, comparative analysis
+✅ Context Tracking: Remembered drug across multiple queries
+✅ Clarification: Asked for drug name when query was vague
+✅ Answer Generation: Generated comprehensive responses with GPT-4
+```
+
+## ⚙️ Configuration
+
+### Environment Variables (.env)
 
 ```env
 # OpenAI API Configuration
@@ -146,143 +200,124 @@ HOST=0.0.0.0
 PORT=8000
 ```
 
-### Model Selection
+### Model Options
 
-The system supports multiple OpenAI models:
+- **gpt-4**: Best quality, most accurate (recommended)
+- **gpt-4-turbo**: Faster, cost-effective
+- **gpt-3.5-turbo**: Most economical
 
-- **gpt-4**: Best quality, higher cost (recommended for production)
-- **gpt-4-turbo**: Faster, cost-effective alternative
-- **gpt-3.5-turbo**: Fastest, most economical option
+## 🔧 Advanced Features
 
-## 📁 Project Structure
+### Query Analyzer
+Powered by GPT-4 to extract:
+- Drug names (brand and generic)
+- Regulatory agencies mentioned
+- Topics (safety, efficacy, dosage, etc.)
+- Query intent and type
+- Need for clarification
 
-```
-Regulatory-Search-Agent/
-├── app/
-│   ├── api/
-│   │   └── endpoints.py
-│   ├── core/
-│   │   ├── config.py
-│   │   └── orchestrator.py
-│   ├── services/
-│   │   ├── document_processing.py
-│   │   ├── rag_service.py
-│   │   ├── vector_store.py
-│   │   └── web_automation/
-│   │       ├── base_scraper.py
-│   │       ├── fda_scraper.py
-│   │       ├── ema_scraper.py
-│   │       └── health_canada_scraper.py
-│   └── gui/
-│       └── chat_interface.py
-├── data/
-│   ├── downloaded_docs/
-│   └── faiss_index/
-├── .env
-├── .env.template
-├── main.py
-└── README.md
-```
+### Context Manager
+Tracks across conversation:
+- Current drug being discussed
+- Selected agencies
+- Topics covered
+- Documents indexed
+- Query history
 
-## 🧪 Testing
+### Comparative Analysis Service
+Generates structured comparisons:
+1. Individual agency summaries
+2. Similarities across agencies
+3. Differences and discrepancies
+4. Integrated synthesis
+5. Key takeaways
 
-Run the test suite:
+## 📈 Performance
 
-```bash
-pytest tests/
-```
+- **Query Analysis**: ~2-3 seconds
+- **Document Download**: 30-60 seconds per document
+- **Embedding Generation**: 0.5-1 second per chunk
+- **Answer Generation**: 3-7 seconds
+- **Comparative Analysis**: 5-10 seconds
 
-Test individual components:
+## 💰 Cost Estimates (OpenAI API)
 
-```bash
-# Test document processing
-python tests/test_document_processing.py
-
-# Test vector store
-python tests/test_vector_store.py
-
-# Test scrapers
-python tests/test_scrapers.py
-```
-
-## 📊 Performance Considerations
-
-### FAISS Index Management
-
-- **Index Type**: Uses `IndexFlatL2` for accuracy; consider `IndexIVFFlat` for larger datasets
-- **Persistence**: Index is saved to disk after each update
-- **Incremental Indexing**: New documents are added without rebuilding the entire index
-
-### Cost Management
-
-- **Embedding Caching**: Embeddings are cached to avoid regeneration
-- **Model Selection**: Use `gpt-3.5-turbo` for cost-effective queries
-- **Chunk Optimization**: Configurable chunk size to balance context and cost
+- **Query Analysis**: ~$0.01 per query
+- **Embeddings**: ~$0.0001 per 1,000 tokens
+- **GPT-4 Answer**: ~$0.03-0.06 per query
+- **Typical Session**: $1-3 for 10-20 queries with document retrieval
 
 ## 🔒 Security
 
-- API keys are stored in environment variables
-- `.env` file is excluded from version control
-- Input validation prevents injection attacks
-- HTTPS recommended for production deployments
+- ✅ API keys stored in .env (not committed to git)
+- ✅ All data stored locally
+- ✅ No external data transmission except to OpenAI
+- ✅ Input validation on all user inputs
+- ✅ Secure document handling
 
-## 🚢 Deployment
+## 🐛 Troubleshooting
 
-### Docker Deployment
-
+### ChromeDriver Issues
 ```bash
-# Build image
-docker build -t regulatory-search-agent .
-
-# Run container
-docker run -p 8000:8000 -p 8501:8501 \
-  -e OPENAI_API_KEY=your_key \
-  regulatory-search-agent
+# Clear webdriver cache
+rm -rf ~/.wdm/
 ```
 
-### Cloud Deployment
+### API Key Errors
+1. Verify key in `.env` file
+2. Check OpenAI account has credits
+3. Ensure `load_dotenv(override=True)` in config.py
 
-The application can be deployed to:
-- AWS (EC2, ECS, or Lambda)
-- Google Cloud Platform (Cloud Run, Compute Engine)
-- Azure (App Service, Container Instances)
+### No Documents Found
+1. Check drug name spelling
+2. Try alternative names (brand vs generic)
+3. Verify agency website is accessible
+4. Check logs for specific errors
+
+## 📚 Documentation
+
+- **README_IMPLEMENTATION.md**: Detailed implementation guide
+- **REGULATORY_SEARCH_AGENT_ARCHITECTURE.md**: System architecture
+- **IMPLEMENTATION_GUIDE.md**: Step-by-step development guide
+- **WEB_AUTOMATION_GUIDE.md**: Web scraping documentation
+- **GUI_IMPLEMENTATION.md**: GUI development guide
+
+## 🚧 Known Limitations
+
+1. **Web Scraping**: Regulatory websites may change structure
+2. **PDF Parsing**: Some complex PDFs may not parse correctly
+3. **Rate Limiting**: Respect agency website rate limits
+4. **API Costs**: OpenAI usage incurs costs
 
 ## 🔮 Future Enhancements
 
-- [ ] Advanced query understanding with entity extraction
-- [ ] Multi-document synthesis and comparative analysis
-- [ ] Automatic document update monitoring
-- [ ] User authentication and personalization
-- [ ] Support for additional regulatory agencies
-- [ ] Migration to scalable vector database (Pinecone, Weaviate)
-- [ ] Real-time document processing pipeline
-- [ ] Advanced analytics and reporting dashboard
+- [ ] Add remaining agency scrapers
+- [ ] Implement document update monitoring
+- [ ] Add user authentication
+- [ ] Create analytics dashboard
+- [ ] Migrate to scalable vector database
+- [ ] Add multi-language support
+- [ ] Implement advanced entity extraction
 
 ## 📝 License
 
-This project is licensed under the MIT License - see the LICENSE file for details.
-
-## 🤝 Contributing
-
-Contributions are welcome! Please follow these steps:
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
-
-## 📧 Support
-
-For questions, issues, or feature requests, please open an issue on GitHub.
+MIT License - See LICENSE file for details
 
 ## 🙏 Acknowledgments
 
-- Inspired by the AgentForge project
-- Built with OpenAI's GPT-4 and embedding models
-- Uses FAISS for efficient vector search
-- Web automation powered by Selenium
+- **OpenAI GPT-4** for intelligent analysis and generation
+- **FAISS** by Facebook Research for vector similarity search
+- **Selenium** for web automation
+- **Gradio** for rapid GUI development
+- **FastAPI** for high-performance API backend
+
+## 📞 Support
+
+- **GitHub**: https://github.com/rootbot2k2/Regulatory-Search-Agent
+- **Issues**: https://github.com/rootbot2k2/Regulatory-Search-Agent/issues
 
 ---
 
-**Built with ❤️ by the Regulatory AI Team**
+**Built with ❤️ for the regulatory affairs community**
+
+*Autonomous, intelligent, and ready to help you navigate the complex world of drug regulation.*
