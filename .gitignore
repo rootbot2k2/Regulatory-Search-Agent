@@ -1,0 +1,39 @@
+# Environment
+.env
+venv/
+env/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Data
+data/downloaded_docs/*
+data/faiss_index/*
+!data/downloaded_docs/.gitkeep
+!data/faiss_index/.gitkeep
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Build
+dist/
+build/
+*.egg-info/
